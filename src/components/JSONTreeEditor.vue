@@ -36,8 +36,8 @@ function updateNode(value: any) {
 </style>
 
 <template>
-  <div class="json-tree-editor">
-    <ul class="tree-root">
+  <div class="v3jte-container">
+    <ul class="v3jte-root">
       <JSONTreeNode
           v-for="(value, key) in treeData"
           :key="key"

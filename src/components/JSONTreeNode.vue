@@ -99,9 +99,9 @@ onBeforeUnmount(() => {
 
 <template>
   <li>
-    <div class="tree-node" :style="{ paddingLeft: depth * baseIndent + 'px' }">
+    <div class="v3jte-node" :style="{ paddingLeft: depth * baseIndent + 'px' }">
             <span
-                class="tree-node-toggle"
+                class="v3jte-toggle"
                 v-if="isObjectOrArray"
                 @click="toggle"
             >
@@ -109,33 +109,35 @@ onBeforeUnmount(() => {
                     {{ expanded ? '- ' : '+ ' }}
                 </slot>
             </span>
-      <span v-if="!keyEditMode" class="tree-node-key" @dblclick="allowKeyEdit && (keyEditMode = true)">
+      <span v-if="!keyEditMode" class="v3jte-key" @dblclick="allowKeyEdit && (keyEditMode = true)">
               {{ editableKey }}:
             </span>
       <input
-          v-if="allowKeyEdit"
           ref="keyInputRef"
-          v-model="editableKey"
+          v-if="allowKeyEdit"
           v-show="keyEditMode"
+          v-model="editableKey"
           @keyup.enter="saveKeyEdit"
           @keyup.esc="cancelKeyEdit"
+          class="v3jte-input v3jte-key-input"
       />
-      <span class="tree-node-value"
+      <span class="v3jte-value"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
             v-if="!editing">
                 {{ isObjectOrArray ? (expanded ? '' : (Array.isArray(nodeValue) ? '[Array]' : '{Object}')) : nodeValue }}
             </span>
       <input
-          v-if="!isObjectOrArray"
           ref="inputRef"
-          v-model="editableValue"
+          v-if="!isObjectOrArray"
           v-show="editing"
+          v-model="editableValue"
           @keyup.enter="saveEdit"
           @keyup.esc="cancelEdit"
+          class="v3jte-input v3jte-value-input"
       />
     </div>
 
-    <ul v-show="expanded" v-if="isObjectOrArray">
+    <ul v-show="expanded" v-if="isObjectOrArray" class="v3jte-children">
       <JSONTreeNode
           v-for="(value, key) in nodeValue"
           :key="key"
