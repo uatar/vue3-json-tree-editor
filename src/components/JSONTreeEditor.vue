@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
   allowKeyEdit?: boolean;
 }>(), {
   baseIndent: 20,
-  allowKeyEdit: true,
+  allowKeyEdit: false,
 });
 
 const emit = defineEmits<{
