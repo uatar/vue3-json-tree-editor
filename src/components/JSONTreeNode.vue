@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'update-value', value: any): void;
   (e: 'rename-key', payload: { oldKey: string | number; newKey: string; value: any }): void;
+  (e: 'remove-self', key: string | number): void;
 }>();
 
 const expanded = ref(false);
@@ -113,6 +114,21 @@ function addChild() {
   }
   emit('update-value', editableValue.value);
 }
+// Remove
+function removeSelf() {
+  emit('remove-self', props.nodeKey);
+}
+function removeChild(key: string | number) {
+  if (Array.isArray(props.nodeValue)) {
+    const updated = [...props.nodeValue];
+    updated.splice(Number(key), 1);
+    emitUpdatedValue(updated);
+  } else {
+    const updated = { ...props.nodeValue };
+    delete updated[key];
+    emitUpdatedValue(updated);
+  }
+}
 
 function emitUpdatedValue(value: any) {
   emit('update-value', value);
@@ -181,6 +197,9 @@ onBeforeUnmount(() => {
       <span v-if="isObjectOrArray && expanded">
                 <button @click="addChild">+</button>
             </span>
+      <span>
+                <button @click="removeSelf">x</button>
+            </span>
     </div>
 
     <ul v-show="expanded" v-if="isObjectOrArray" :class="['v3jte-children', childrenClass]">
@@ -202,6 +221,7 @@ onBeforeUnmount(() => {
           :input-class="inputClass"
           @update-value="(val) => updateChildNode(val, key)"
           @rename-key="handleChildKeyRename"
+          @remove-self="removeChild"
       >
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />

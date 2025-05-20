@@ -45,6 +45,17 @@ function addRow(payload: { key: string | number }) {
     emit('update:modelValue', { ...treeData.value });
   }
 }
+// Remove
+function removeRow(key: string | number) {
+  if (Array.isArray(treeData.value)) {
+    treeData.value.splice(Number(key), 1);
+  } else {
+    const updated = { ...treeData.value };
+    delete updated[key];
+    treeData.value = updated;
+  }
+  emit('update:modelValue', { ...treeData.value });
+}
 </script>
 
 <template>
@@ -66,6 +77,7 @@ function addRow(payload: { key: string | number }) {
           :children-class="childrenClass"
           :input-class="inputClass"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
+          @remove-self="removeRow"
       >
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />
