@@ -78,9 +78,14 @@ function emitUpdatedValue(value: any) {
 
 // Click outside input save and hide input
 const inputRef = ref<HTMLInputElement | null>(null);
+const keyInputRef = ref<HTMLElement | null>(null)
 function handleClickOutside(event: MouseEvent) {
-  if (editing.value && inputRef.value && !inputRef.value.contains(event.target as Node)) {
+  const target = event.target as Node
+  if (editing.value && inputRef.value && !inputRef.value.contains(target)) {
     saveEdit();
+  }
+  if (keyEditMode.value && keyInputRef.value && !keyInputRef.value.contains(target)) {
+    saveKeyEdit()
   }
 }
 
@@ -108,11 +113,12 @@ onBeforeUnmount(() => {
               {{ editableKey }}:
             </span>
       <input
-          v-if="keyEditMode"
+          v-if="allowKeyEdit"
+          ref="keyInputRef"
           v-model="editableKey"
+          v-show="keyEditMode"
           @keyup.enter="saveKeyEdit"
           @keyup.esc="cancelKeyEdit"
-          @blur="saveKeyEdit"
       />
       <span class="tree-node-value"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
