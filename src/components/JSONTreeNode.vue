@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue';
 import JSONTreeNode from './JSONTreeNode.vue';
 
 const props = withDefaults(defineProps<{
   nodeKey: string | number;
   nodeValue: any;
-  depth?: number;
   baseIndent?: number;
   allowKeyEdit?: boolean;
   allowChildAdding?: boolean;
@@ -20,9 +19,13 @@ const props = withDefaults(defineProps<{
   inputClass?: string;
   addChildClass?: string;
   removeClass?: string;
+
+  depth?: number;
+  isParentArray?: boolean;
 }>(), {
   depth: 0,
   baseIndent: 20,
+  isParentArray: false,
 });
 
 const emit = defineEmits<{
@@ -40,12 +43,15 @@ const editableKey = ref(String(props.nodeKey));
 const displayKey = computed(() => {
   return editableKey.value.trim() === '' ? '<empty>' : editableKey.value;
 });
-
 const displayValue = computed(() => {
   if (isObjectOrArray) {
     return expanded.value ? '' : (Array.isArray(props.nodeValue) ? '[Array]' : '{Object}');
   }
   return typeof props.nodeValue === 'string' && props.nodeValue.trim() === '' ? '<empty>' : props.nodeValue;
+});
+
+watch(() => props.nodeKey, (newKey) => {
+  editableKey.value = String(newKey);
 });
 
 const isObjectOrArray = typeof props.nodeValue === 'object' && props.nodeValue !== null;
@@ -66,6 +72,12 @@ function saveKeyEdit() {
 
   const newKey = editableKey.value.trim();
   const oldKey = props.nodeKey;
+
+  if (props.isParentArray && !/^\d+$/.test(newKey)) {
+    editableKey.value = String(oldKey);
+    console.warn('Only numeric keys are allowed for arrays.');
+    return;
+  }
 
   if (!newKey || newKey === oldKey) return;
 
@@ -212,6 +224,7 @@ onBeforeUnmount(() => {
           :nodeKey="key"
           :nodeValue="value"
           :depth="depth + 1"
+          :is-parent-array="Array.isArray(nodeValue)"
           :base-indent="baseIndent"
           :allow-key-edit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
