@@ -93,6 +93,16 @@ function handleChildKeyRename({ oldKey, newKey, value }: { oldKey: string | numb
   }
 }
 
+// Add
+function addChild() {
+  if (Array.isArray(editableValue.value)) {
+    editableValue.value.push('value');
+  } else if (typeof editableValue.value === 'object' && editableValue.value !== null) {
+    editableValue.value['newKey_' + Date.now()] = 'value';
+  }
+  emit('update-value', editableValue.value);
+}
+
 function emitUpdatedValue(value: any) {
   emit('update-value', value);
 }
@@ -157,6 +167,9 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
+      <span v-if="isObjectOrArray && expanded">
+                <button @click="addChild">+</button>
+            </span>
     </div>
 
     <ul v-show="expanded" v-if="isObjectOrArray" :class="['v3jte-children', childrenClass]">

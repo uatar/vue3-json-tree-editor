@@ -36,6 +36,15 @@ watch(() => props.modelValue, (newValue) => {
 function updateNode(value: any) {
   emit('update:modelValue', value);
 }
+
+// Add
+function addRow(payload: { key: string | number }) {
+  if (typeof treeData.value === 'object' && !Array.isArray(treeData.value)) {
+    const newKey = 'newKey_' + Date.now();
+    treeData.value[newKey] = 'value';
+    emit('update:modelValue', { ...treeData.value });
+  }
+}
 </script>
 
 <template>
@@ -62,6 +71,9 @@ function updateNode(value: any) {
           <slot name="toggle-icon" :expanded="expanded" />
         </template>
       </JSONTreeNode>
+      <div>
+        <button @click="addRow">+ Add new</button>
+      </div>
     </ul>
   </div>
 </template>
