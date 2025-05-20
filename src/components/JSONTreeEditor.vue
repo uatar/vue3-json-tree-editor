@@ -28,13 +28,6 @@ function updateNode(value: any) {
 }
 </script>
 
-<style scoped>
-.json-tree-editor {
-  font-family: monospace;
-  padding: 10px;
-}
-</style>
-
 <template>
   <div class="v3jte-container">
     <ul class="v3jte-root">
