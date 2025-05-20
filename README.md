@@ -57,8 +57,8 @@ const JSONTreeData = ref({
 
 Use these classes to customize the appearance of the component:
 
+- `v3jte-container` – Container of the entire JSON editor
 - `v3jte-root` – Root wrapper of the entire JSON editor
-- `v3jte-container` – Container for each JSON node row
 - `v3jte-node` – Main wrapper for a single key-value pair or branch
 - `v3jte-toggle` – Expand/collapse button for objects and arrays
 - `v3jte-key` – Key label display
