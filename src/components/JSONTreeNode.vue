@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import JSONTreeNode from './JSONTreeNode.vue';
 
 const props = withDefaults(defineProps<{
@@ -31,6 +31,17 @@ const editing = ref(false);
 const keyEditMode = ref(false);
 const editableValue = ref(props.nodeValue);
 const editableKey = ref(String(props.nodeKey));
+
+const displayKey = computed(() => {
+  return editableKey.value.trim() === '' ? '<empty>' : editableKey.value;
+});
+
+const displayValue = computed(() => {
+  if (isObjectOrArray) {
+    return expanded.value ? '' : (Array.isArray(props.nodeValue) ? '[Array]' : '{Object}');
+  }
+  return typeof props.nodeValue === 'string' && props.nodeValue.trim() === '' ? '<empty>' : props.nodeValue;
+});
 
 const isObjectOrArray = typeof props.nodeValue === 'object' && props.nodeValue !== null;
 
@@ -142,7 +153,7 @@ onBeforeUnmount(() => {
             </span>
       <span v-if="!keyEditMode" :class="['v3jte-key', keyClass]" :title="allowKeyEdit ? 'Double-click to edit key' : ''"
             @dblclick="allowKeyEdit && (keyEditMode = true)">
-              {{ editableKey }}:
+              {{ displayKey }}:
             </span>
       <input
           ref="keyInputRef"
@@ -156,7 +167,7 @@ onBeforeUnmount(() => {
       <span :class="['v3jte-value', valueClass]" :title="!isObjectOrArray ? 'Double-click to edit value' : 'Double-click to expand'"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
             v-if="!editing">
-                {{ isObjectOrArray ? (expanded ? '' : (Array.isArray(nodeValue) ? '[Array]' : '{Object}')) : nodeValue }}
+                {{ displayValue }}
             </span>
       <input
           ref="inputRef"
