@@ -1,29 +1,68 @@
 # vue3-json-tree-editor
 
-This template should help get you started developing with Vue 3 in Vite.
+A customizable and lightweight JSON tree editor component for Vue 3.  
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## ✨ Key Features
 
-## Customize configuration
+- Edit JSON keys and values
+- Expand/collapse object and array nodes
+- Visual indentation based on nesting depth
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 📦 Installation
 
-## Project Setup
-
-```sh
-npm install
+```bash
+npm install vue3-json-tree-editor
 ```
 
-### Compile and Hot-Reload for Development
+## 🚀 Usage
 
-```sh
-npm run dev
+### Basic
+
+```vue
+<script setup>
+import JSONTreeEditor from 'vue3-json-tree-editor'
+
+const JSONTreeData = ref({
+  name: 'John',
+  age: 30,
+  skills: {
+    frontend: 'Vue',
+    backend: 'Node.js'
+  },
+})
+</script>
+
+<template>
+  <JSONTreeEditor v-model="JSONTreeData" />
+</template>
 ```
 
-### Compile and Minify for Production
+### Full
 
-```sh
-npm run build
+```vue
+<JSONTreeEditor
+  v-model="JSONTreeData"
+  :allow-key-edit="true"
+>
+  <template #toggle-icon="{ expanded }">
+    <span>{{ expanded ? '▼ ' : '▶ ' }}</span>
+  </template>
+</JSONTreeEditor>
 ```
+
+## 🧩 CSS Class Reference
+
+Use these classes to customize the appearance of the component:
+
+- `v3jte-root` – Root wrapper of the entire JSON editor
+- `v3jte-container` – Container for each JSON node row
+- `v3jte-node` – Main wrapper for a single key-value pair or branch
+- `v3jte-toggle` – Expand/collapse button for objects and arrays
+- `v3jte-key` – Key label display
+- `v3jte-key-input` – Input field for editing keys
+- `v3jte-value` – Value label display
+- `v3jte-value-input` – Input field for editing values
+- `v3jte-children` – Wrapper for nested child nodes
+- `v3jte-input` – Shared base class applied to all editable input fields
