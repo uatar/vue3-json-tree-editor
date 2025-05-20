@@ -178,7 +178,11 @@ onBeforeUnmount(() => {
           :input-class="inputClass"
           @update-value="(val) => updateChildNode(val, key)"
           @rename-key="handleChildKeyRename"
-      />
+      >
+        <template #toggle-icon="{ expanded }">
+          <slot name="toggle-icon" :expanded="expanded" />
+        </template>
+      </JSONTreeNode>
     </ul>
   </li>
 </template>
