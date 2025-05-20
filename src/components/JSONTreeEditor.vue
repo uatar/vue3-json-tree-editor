@@ -6,16 +6,19 @@ const props = withDefaults(defineProps<{
   modelValue: Record<string, any> | null;
   baseIndent?: number;
   allowKeyEdit?: boolean;
-  containerClass?: string
-  rootClass?: string
-  nodeClass?: string
-  toggleClass?: string
-  keyClass?: string
-  keyInputClass?: string
-  valueClass?: string
-  valueInputClass?: string
-  childrenClass?: string
-  inputClass?: string
+  containerClass?: string;
+  rootClass?: string;
+  nodeClass?: string;
+  toggleClass?: string;
+  keyClass?: string;
+  keyInputClass?: string;
+  valueClass?: string;
+  valueInputClass?: string;
+  childrenClass?: string;
+  inputClass?: string;
+  addRowClass?: string;
+  addChildClass?: string;
+  removeClass?: string;
 }>(), {
   baseIndent: 20,
   allowKeyEdit: false,
@@ -76,6 +79,8 @@ function removeRow(key: string | number) {
           :value-input-class="valueInputClass"
           :children-class="childrenClass"
           :input-class="inputClass"
+          :add-child-class="addChildClass"
+          :remove-class="removeClass"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
           @remove-self="removeRow"
       >
@@ -90,7 +95,7 @@ function removeRow(key: string | number) {
         </template>
       </JSONTreeNode>
 
-      <div title="Add row">
+      <div :class="['v3jte-add-row', addRowClass]" title="Add a new record">
         <slot name="add-row" :addRow="addRow">
           <button @click="addRow">+ Add new</button>
         </slot>
