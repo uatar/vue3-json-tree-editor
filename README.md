@@ -45,6 +45,7 @@ const JSONTreeData = ref({
 <JSONTreeEditor
   v-model="JSONTreeData"
   :allow-key-edit="true"
+  :base-indent="20"
 >
   <template #toggle-icon="{ expanded }">
     <span>{{ expanded ? '▼ ' : '▶ ' }}</span>
