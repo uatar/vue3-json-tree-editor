@@ -65,19 +65,32 @@ function cancelKeyEdit() {
 }
 
 function updateChildNode(updatedValue: any, childKey: string | number) {
-  const updatedNode = { ...props.nodeValue, [childKey]: updatedValue };
+  let updatedNode;
+
+  if (Array.isArray(props.nodeValue)) {
+    updatedNode = [...props.nodeValue];
+    updatedNode[Number(childKey)] = updatedValue;
+  } else {
+    updatedNode = { ...props.nodeValue, [childKey]: updatedValue };
+  }
+
   emitUpdatedValue(updatedNode);
 }
 function handleChildKeyRename({ oldKey, newKey, value }: { oldKey: string | number; newKey: string; value: any }) {
-  if (typeof props.nodeValue !== 'object' || props.nodeValue === null) return;
-
-  const entries = Object.entries(props.nodeValue);
-  const updatedEntries = entries.map(([key, val]) =>
-      key === oldKey ? [newKey, value] : [key, val]
-  );
-
-  const updatedObject = Object.fromEntries(updatedEntries);
-  emitUpdatedValue(updatedObject);
+  if (Array.isArray(props.nodeValue)) {
+    const arr = [...props.nodeValue];
+    const index = Number(oldKey);
+    if (!isNaN(index)) {
+      arr.splice(index, 1); // remove old
+      arr.splice(Number(newKey), 0, value); // insert new at new index
+      emitUpdatedValue(arr);
+    }
+  } else {
+    const updated = { ...props.nodeValue };
+    delete updated[oldKey];
+    updated[newKey] = value;
+    emitUpdatedValue(updated);
+  }
 }
 
 function emitUpdatedValue(value: any) {
