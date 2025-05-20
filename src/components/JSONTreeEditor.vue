@@ -6,6 +6,9 @@ const props = withDefaults(defineProps<{
   modelValue: Record<string, any> | null;
   baseIndent?: number;
   allowKeyEdit?: boolean;
+  allowRowAdding?: boolean;
+  allowChildAdding?: boolean;
+  allowRemoving?: boolean;
   containerClass?: string;
   rootClass?: string;
   nodeClass?: string;
@@ -22,6 +25,9 @@ const props = withDefaults(defineProps<{
 }>(), {
   baseIndent: 20,
   allowKeyEdit: false,
+  allowRowAdding: false,
+  allowChildAdding: false,
+  allowRemoving: false,
 });
 
 const emit = defineEmits<{
@@ -71,6 +77,8 @@ function removeRow(key: string | number) {
           :nodeValue="value"
           :baseIndent="baseIndent"
           :allowKeyEdit="allowKeyEdit"
+          :allow-child-adding="allowChildAdding"
+          :allow-removing="allowRemoving"
           :node-class="nodeClass"
           :toggle-class="toggleClass"
           :key-class="keyClass"
@@ -95,7 +103,7 @@ function removeRow(key: string | number) {
         </template>
       </JSONTreeNode>
 
-      <div :class="['v3jte-add-row', addRowClass]" title="Add a new record">
+      <div v-if="allowRowAdding" :class="['v3jte-add-row', addRowClass]" title="Add a new record">
         <slot name="add-row" :addRow="addRow">
           <button @click="addRow">+ Add new</button>
         </slot>

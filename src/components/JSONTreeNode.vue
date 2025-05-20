@@ -8,6 +8,8 @@ const props = withDefaults(defineProps<{
   depth?: number;
   baseIndent?: number;
   allowKeyEdit?: boolean;
+  allowChildAdding?: boolean;
+  allowRemoving?: boolean;
   nodeClass?: string;
   toggleClass?: string;
   keyClass?: string;
@@ -196,7 +198,7 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
-      <span :class="['v3jte-remove', removeClass]" title="Remove">
+      <span v-if="allowRemoving" :class="['v3jte-remove', removeClass]" title="Remove">
                 <slot name="remove-node" :remove="removeSelf">
                     <button @click="removeSelf" style="margin-left: 10px;">x</button>
                 </slot>
@@ -212,6 +214,8 @@ onBeforeUnmount(() => {
           :depth="depth + 1"
           :base-indent="baseIndent"
           :allow-key-edit="allowKeyEdit"
+          :allow-child-adding="allowChildAdding"
+          :allow-removing="allowRemoving"
           :node-class="nodeClass"
           :toggle-class="toggleClass"
           :key-class="keyClass"
@@ -238,7 +242,7 @@ onBeforeUnmount(() => {
       </JSONTreeNode>
     </ul>
 
-    <span v-if="isObjectOrArray && expanded" :style="{ paddingLeft: (depth + 1) * baseIndent + 'px' }"
+    <span v-if="allowChildAdding && isObjectOrArray" v-show="expanded" :style="{ paddingLeft: (depth + 1) * baseIndent + 'px' }"
           :class="['v3jte-add-child', addChildClass]" title="Add a new record">
             <slot name="add-child" :addChild="addChild">
                 <button @click="addChild">Add</button>
