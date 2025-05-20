@@ -100,7 +100,9 @@ onBeforeUnmount(() => {
                 v-if="isObjectOrArray"
                 @click="toggle"
             >
-                {{ expanded ? '- ' : '+ ' }}
+                <slot name="toggle-icon" :expanded="expanded">
+                    {{ expanded ? '- ' : '+ ' }}
+                </slot>
             </span>
       <span v-if="!keyEditMode" class="tree-node-key" @dblclick="allowKeyEdit && (keyEditMode = true)">
               {{ editableKey }}:

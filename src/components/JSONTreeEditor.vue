@@ -46,7 +46,11 @@ function updateNode(value: any) {
           :baseIndent="baseIndent"
           :allowKeyEdit="allowKeyEdit"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
-      />
+      >
+        <template #toggle-icon="{ expanded }">
+          <slot name="toggle-icon" :expanded="expanded" />
+        </template>
+      </JSONTreeNode>
     </ul>
   </div>
 </template>
