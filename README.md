@@ -58,7 +58,7 @@ const JSONTreeData = ref({
   :children-class="''"
 >
   <template #toggle-icon="{ expanded }">
-    <span>{{ expanded ? '▼ ' : '▶ ' }}</span>
+    <span>{{ expanded ? '⯆ ' : '⯈ ' }}</span>
   </template>
 </JSONTreeEditor>
 ```
