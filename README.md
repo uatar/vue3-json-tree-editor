@@ -46,6 +46,16 @@ const JSONTreeData = ref({
   v-model="JSONTreeData"
   :allow-key-edit="true"
   :base-indent="20"
+  :container-class="'p-3'"
+  :root-class="'p-3 shadow'"
+  :node-class="'hover:shadow-sm'"
+  :toggle-class="'cursor-pointer'"
+  :key-class="''"
+  :value-class="''"
+  :input-class="'border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 focus:border-primary-500 dark:focus:border-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 shadow-sm'"
+  :key-input-class="'mr-3'"
+  :value-input-class="''"
+  :children-class="''"
 >
   <template #toggle-icon="{ expanded }">
     <span>{{ expanded ? '▼ ' : '▶ ' }}</span>
