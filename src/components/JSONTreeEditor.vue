@@ -6,6 +6,16 @@ const props = withDefaults(defineProps<{
   modelValue: Record<string, any> | null;
   baseIndent?: number;
   allowKeyEdit?: boolean;
+  containerClass?: string
+  rootClass?: string
+  nodeClass?: string
+  toggleClass?: string
+  keyClass?: string
+  keyInputClass?: string
+  valueClass?: string
+  valueInputClass?: string
+  childrenClass?: string
+  inputClass?: string
 }>(), {
   baseIndent: 20,
   allowKeyEdit: false,
@@ -29,8 +39,8 @@ function updateNode(value: any) {
 </script>
 
 <template>
-  <div class="v3jte-container">
-    <ul class="v3jte-root">
+  <div :class="['v3jte-container', containerClass]">
+    <ul :class="['v3jte-root', rootClass]">
       <JSONTreeNode
           v-for="(value, key) in treeData"
           :key="key"
@@ -38,6 +48,14 @@ function updateNode(value: any) {
           :nodeValue="value"
           :baseIndent="baseIndent"
           :allowKeyEdit="allowKeyEdit"
+          :node-class="nodeClass"
+          :toggle-class="toggleClass"
+          :key-class="keyClass"
+          :key-input-class="keyInputClass"
+          :value-class="valueClass"
+          :value-input-class="valueInputClass"
+          :children-class="childrenClass"
+          :input-class="inputClass"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
       >
         <template #toggle-icon="{ expanded }">

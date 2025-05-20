@@ -8,6 +8,14 @@ const props = withDefaults(defineProps<{
   depth?: number;
   baseIndent?: number;
   allowKeyEdit?: boolean;
+  nodeClass?: string
+  toggleClass?: string
+  keyClass?: string
+  keyInputClass?: string
+  valueClass?: string
+  valueInputClass?: string
+  childrenClass?: string
+  inputClass?: string
 }>(), {
   depth: 0,
   baseIndent: 20,
@@ -99,9 +107,9 @@ onBeforeUnmount(() => {
 
 <template>
   <li>
-    <div class="v3jte-node" :style="{ paddingLeft: depth * baseIndent + 'px' }">
+    <div :class="['v3jte-node', nodeClass]" :style="{ paddingLeft: depth * baseIndent + 'px' }">
             <span
-                class="v3jte-toggle"
+                :class="['v3jte-toggle', toggleClass]"
                 v-if="isObjectOrArray"
                 @click="toggle"
             >
@@ -109,7 +117,7 @@ onBeforeUnmount(() => {
                     {{ expanded ? '- ' : '+ ' }}
                 </slot>
             </span>
-      <span v-if="!keyEditMode" class="v3jte-key" @dblclick="allowKeyEdit && (keyEditMode = true)">
+      <span v-if="!keyEditMode" :class="['v3jte-key', keyClass]" @dblclick="allowKeyEdit && (keyEditMode = true)">
               {{ editableKey }}:
             </span>
       <input
@@ -119,9 +127,9 @@ onBeforeUnmount(() => {
           v-model="editableKey"
           @keyup.enter="saveKeyEdit"
           @keyup.esc="cancelKeyEdit"
-          class="v3jte-input v3jte-key-input"
+          :class="['v3jte-input v3jte-key-input', inputClass, keyInputClass]"
       />
-      <span class="v3jte-value"
+      <span :class="['v3jte-value', valueClass]"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
             v-if="!editing">
                 {{ isObjectOrArray ? (expanded ? '' : (Array.isArray(nodeValue) ? '[Array]' : '{Object}')) : nodeValue }}
@@ -133,11 +141,11 @@ onBeforeUnmount(() => {
           v-model="editableValue"
           @keyup.enter="saveEdit"
           @keyup.esc="cancelEdit"
-          class="v3jte-input v3jte-value-input"
+          :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
     </div>
 
-    <ul v-show="expanded" v-if="isObjectOrArray" class="v3jte-children">
+    <ul v-show="expanded" v-if="isObjectOrArray" :class="['v3jte-children', childrenClass]">
       <JSONTreeNode
           v-for="(value, key) in nodeValue"
           :key="key"
@@ -146,6 +154,14 @@ onBeforeUnmount(() => {
           :depth="depth + 1"
           :base-indent="baseIndent"
           :allow-key-edit="allowKeyEdit"
+          :node-class="nodeClass"
+          :toggle-class="toggleClass"
+          :key-class="keyClass"
+          :key-input-class="keyInputClass"
+          :value-class="valueClass"
+          :value-input-class="valueInputClass"
+          :children-class="childrenClass"
+          :input-class="inputClass"
           @update-value="(val) => updateChildNode(val, key)"
           @rename-key="handleChildKeyRename"
       />
