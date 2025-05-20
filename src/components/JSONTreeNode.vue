@@ -124,9 +124,9 @@ function handleChildKeyRename({ oldKey, newKey, value }: { oldKey: string | numb
 // Add
 function addChild() {
   if (Array.isArray(editableValue.value)) {
-    editableValue.value.push('value');
+    editableValue.value.push('');
   } else if (typeof editableValue.value === 'object' && editableValue.value !== null) {
-    editableValue.value['newKey_' + Date.now()] = 'value';
+    editableValue.value['newKey_' + Date.now()] = '';
   }
   emit('update-value', editableValue.value);
 }
@@ -183,13 +183,15 @@ onBeforeUnmount(() => {
                     {{ expanded ? '- ' : '+ ' }}
                 </slot>
             </span>
-      <span v-if="!keyEditMode" :class="['v3jte-key', keyClass]" :title="allowKeyEdit ? 'Double-click to edit key' : ''"
+      <span v-if="!keyEditMode && !props.isParentArray"
+            :class="['v3jte-key', keyClass]"
+            :title="allowKeyEdit ? 'Double-click to edit key' : ''"
             @dblclick="allowKeyEdit && (keyEditMode = true)">
               {{ displayKey }}:
             </span>
       <input
           ref="keyInputRef"
-          v-if="allowKeyEdit"
+          v-if="allowKeyEdit && !props.isParentArray"
           v-show="keyEditMode"
           v-model="editableKey"
           @keyup.enter="saveKeyEdit"

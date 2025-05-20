@@ -50,7 +50,7 @@ function updateNode(value: any) {
 function addRow(payload: { key: string | number }) {
   if (typeof treeData.value === 'object' && !Array.isArray(treeData.value)) {
     const newKey = 'newKey_' + Date.now();
-    treeData.value[newKey] = 'value';
+    treeData.value[newKey] = '';
     emit('update:modelValue', { ...treeData.value });
   }
 }
