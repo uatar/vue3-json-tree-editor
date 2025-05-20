@@ -117,7 +117,8 @@ onBeforeUnmount(() => {
                     {{ expanded ? '- ' : '+ ' }}
                 </slot>
             </span>
-      <span v-if="!keyEditMode" :class="['v3jte-key', keyClass]" @dblclick="allowKeyEdit && (keyEditMode = true)">
+      <span v-if="!keyEditMode" :class="['v3jte-key', keyClass]" :title="allowKeyEdit ? 'Double-click to edit key' : ''"
+            @dblclick="allowKeyEdit && (keyEditMode = true)">
               {{ editableKey }}:
             </span>
       <input
@@ -129,7 +130,7 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelKeyEdit"
           :class="['v3jte-input v3jte-key-input', inputClass, keyInputClass]"
       />
-      <span :class="['v3jte-value', valueClass]"
+      <span :class="['v3jte-value', valueClass]" :title="!isObjectOrArray ? 'Double-click to edit value' : 'Double-click to expand'"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
             v-if="!editing">
                 {{ isObjectOrArray ? (expanded ? '' : (Array.isArray(nodeValue) ? '[Array]' : '{Object}')) : nodeValue }}
