@@ -194,11 +194,10 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
-      <span v-if="isObjectOrArray && expanded">
-                <button @click="addChild">+</button>
-            </span>
-      <span>
-                <button @click="removeSelf">x</button>
+      <span title="Remove">
+                <slot name="remove-node" :remove="removeSelf">
+                    <button @click="removeSelf" style="margin-left: 10px;">x</button>
+                </slot>
             </span>
     </div>
 
@@ -226,7 +225,19 @@ onBeforeUnmount(() => {
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />
         </template>
+        <template #add-child="{ addChild }">
+          <slot name="add-child" :addChild="addChild" />
+        </template>
+        <template #remove-node="{ remove }">
+          <slot name="remove-node" :remove="remove" />
+        </template>
       </JSONTreeNode>
     </ul>
+
+    <span v-if="isObjectOrArray && expanded" :style="{ paddingLeft: (depth + 1) * baseIndent + 'px' }" title="Add child">
+            <slot name="add-child" :addChild="addChild">
+                <button @click="addChild">Add</button>
+            </slot>
+        </span>
   </li>
 </template>

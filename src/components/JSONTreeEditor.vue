@@ -82,9 +82,18 @@ function removeRow(key: string | number) {
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />
         </template>
+        <template #add-child="{ addChild }">
+          <slot name="add-child" :addChild="addChild" />
+        </template>
+        <template #remove-node="{ remove }">
+          <slot name="remove-node" :remove="remove" />
+        </template>
       </JSONTreeNode>
-      <div>
-        <button @click="addRow">+ Add new</button>
+
+      <div title="Add row">
+        <slot name="add-row" :addRow="addRow">
+          <button @click="addRow">+ Add new</button>
+        </slot>
       </div>
     </ul>
   </div>
