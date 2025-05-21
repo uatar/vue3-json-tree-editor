@@ -1,6 +1,6 @@
 # vue3-json-tree-editor
 
-A customizable and lightweight JSON tree editor component for Vue 3.  
+A lightweight and customizable JSON tree editor component for Vue 3.
 
 ---
 
