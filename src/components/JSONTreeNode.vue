@@ -183,26 +183,40 @@ function removeChild(key: string | number) {
 const supportedTypes = ['string', 'number', 'boolean', 'array', 'object'];
 function changeType(newType: string) {
   showTypeSelect.value = false;
+  const oldVal = editableValue.value;
   let newVal: any;
 
   switch (newType) {
     case 'string':
-      newVal = '';
+      newVal = typeof oldVal === 'string' ? oldVal : String(oldVal);
       break;
     case 'number':
-      newVal = 0;
+      if (typeof oldVal === 'number') newVal = oldVal;
+      else {
+        const parsed = Number(oldVal);
+        newVal = isNaN(parsed) ? 0 : parsed;
+      }
       break;
     case 'boolean':
-      newVal = false;
+      if (typeof oldVal === 'boolean') newVal = oldVal;
+      else {
+        const str = String(oldVal).toLowerCase();
+        if (str === 'true') newVal = true;
+        else if (str === 'false') newVal = false;
+        else newVal = false;
+      }
       break;
     case 'array':
-      newVal = [];
+      newVal = Array.isArray(oldVal) ? oldVal : [oldVal];
       break;
     case 'object':
-      newVal = {};
+      newVal = typeof oldVal === 'object' && oldVal !== null && !Array.isArray(oldVal)
+          ? oldVal
+          : { value: oldVal };
       break;
   }
 
+  editableValue.value = newVal;
   emitUpdatedValue(newVal);
 }
 
