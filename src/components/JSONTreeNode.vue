@@ -66,7 +66,22 @@ function toggle() {
 }
 function saveEdit() {
   editing.value = false;
-  emitUpdatedValue(editableValue.value);
+  let newVal = editableValue.value;
+  // number validation
+  if (typeof props.nodeValue === 'number' && !isNaN(Number(newVal))) {
+    newVal = Number(newVal);
+  }
+  // bool validation
+  else if (typeof props.nodeValue === 'boolean') {
+    const lower = String(newVal).toLowerCase();
+    if (lower === 'true') newVal = true;
+    else if (lower === 'false') newVal = false;
+    else {
+      editableValue.value = props.nodeValue;
+      newVal = props.nodeValue;
+    }
+  }
+  emitUpdatedValue(newVal);
 }
 function cancelEdit() {
   editing.value = false;
