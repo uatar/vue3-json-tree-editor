@@ -100,3 +100,26 @@ Use these classes to customize the appearance of the component:
 - `v3jte-add-child` – Wrapper of the button for adding a child inside objects/arrays
 - `v3jte-remove` – Wrapper of the remove button for deleting a node
 - `v3jte-type-switch` – Wrapper of the button for changing the type of values
+
+## ⚠️ Events: Error Handling
+
+These events are emitted when errors occur. You can use them to show user-facing notifications, tooltips, or log invalid input.
+
+### `invalid-key`
+
+Emitted when a key renaming attempt is rejected.
+
+**Payload:**
+```ts
+{
+  reason: string;
+  attemptedKey: string;
+  originalKey: string;
+}
+```
+
+Possible reason values:
+
+- 'non-numeric-in-array' – A non-numeric key was entered in an array context.
+- 'duplicate' – A key with the same name already exists at the current level.
+
