@@ -44,6 +44,7 @@ const JSONTreeData = ref({
 ```vue
 <JSONTreeEditor
     v-model="JSONTreeData"
+    :read-only="false"
     :allow-key-edit="true"
     :allow-row-adding="true"
     :allow-child-adding="true"
