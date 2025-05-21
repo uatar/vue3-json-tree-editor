@@ -96,3 +96,7 @@ Use these classes to customize the appearance of the component:
 - `v3jte-value-input` – Input field for editing values
 - `v3jte-children` – Wrapper for nested child nodes
 - `v3jte-input` – Shared base class applied to all editable input fields
+- `v3jte-add-row` – Wrapper of the button for adding a new top-level key/value
+- `v3jte-add-child` – Wrapper of the button for adding a child inside objects/arrays
+- `v3jte-remove` – Wrapper of the remove button for deleting a node
+- `v3jte-type-switch` – Wrapper of the button for changing the type of values
