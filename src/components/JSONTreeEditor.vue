@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
   allowRowAdding?: boolean;
   allowChildAdding?: boolean;
   allowRemoving?: boolean;
+  allowTypeChanging?: boolean;
   containerClass?: string;
   rootClass?: string;
   nodeClass?: string;
@@ -31,6 +32,7 @@ const props = withDefaults(defineProps<{
   allowRowAdding: false,
   allowChildAdding: false,
   allowRemoving: false,
+  allowTypeChanging: false,
 });
 
 const emit = defineEmits<{
@@ -85,6 +87,7 @@ function removeRow(key: string | number) {
           :allowKeyEdit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
           :allow-removing="allowRemoving"
+          :allow-type-changing="allowTypeChanging"
           :node-class="nodeClass"
           :toggle-class="toggleClass"
           :key-class="keyClass"

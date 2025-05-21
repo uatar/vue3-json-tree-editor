@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
   allowKeyEdit?: boolean;
   allowChildAdding?: boolean;
   allowRemoving?: boolean;
+  allowTypeChanging?: boolean;
   nodeClass?: string;
   toggleClass?: string;
   keyClass?: string;
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<{
   allowChildAdding: false,
   allowRemoving: false,
   isParentArray: false,
+  allowTypeChanging: false,
 });
 
 const emit = defineEmits<{
@@ -198,6 +200,8 @@ function removeChild(key: string | number) {
 const supportedTypes = ['string', 'number', 'boolean', 'array', 'object'];
 function changeType(newType: string) {
   showTypeSelect.value = false;
+  if (!props.allowTypeChanging) return;
+
   const oldVal = editableValue.value;
   let newVal: any;
 
@@ -310,11 +314,12 @@ onBeforeUnmount(() => {
             </span>
       <select
           ref="typeInputRef"
-          v-if="!readOnly"
+          v-if="!readOnly && allowTypeChanging"
           v-show="showTypeSelect"
           @change="changeType($event.target.value)"
           @keyup.esc="showTypeSelect = false"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
+          :disabled="!allowTypeChanging"
       >
         <option v-for="type in supportedTypes" :key="type" :value="type">
           {{ type }}
@@ -342,7 +347,12 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
-      <span v-if="!readOnly && hovering" :class="['v3jte-type-switch', typeSwitchClass]" title="Change Type" ref="typeToggleBtnRef">
+      <span
+          ref="typeToggleBtnRef"
+          v-if="!readOnly && allowTypeChanging && hovering"
+          :class="['v3jte-type-switch', typeSwitchClass]"
+          title="Change Type"
+      >
                 <slot name="type-switch" :toggle="() => showTypeSelect = !showTypeSelect">
                     <button @click="showTypeSelect = !showTypeSelect" style="margin-left: 10px;">T</button>
                 </slot>
@@ -368,6 +378,7 @@ onBeforeUnmount(() => {
           :allow-key-edit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
           :allow-removing="allowRemoving"
+          :allow-type-changing="allowTypeChanging"
           :node-class="nodeClass"
           :toggle-class="toggleClass"
           :key-class="keyClass"
