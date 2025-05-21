@@ -34,6 +34,7 @@ const emit = defineEmits<{
   (e: 'update-value', value: any): void;
   (e: 'rename-key', payload: { oldKey: string | number; newKey: string; value: any }): void;
   (e: 'remove-self', key: string | number): void;
+  (e: 'invalid-key', payload: { reason: 'non-numeric-in-array' | 'duplicate'; attemptedKey: string; originalKey: string }): void;
 }>();
 
 const expanded = ref(false);
@@ -99,7 +100,11 @@ function saveKeyEdit() {
 
   if (props.isParentArray && !/^\d+$/.test(newKey)) {
     editableKey.value = String(oldKey); // revert
-    console.warn('Only numeric keys are allowed for arrays.');
+    emit('invalid-key', {
+      reason: 'non-numeric-in-array',
+      attemptedKey: newKey,
+      originalKey: String(oldKey),
+    });
     return;
   }
 
@@ -109,7 +114,11 @@ function saveKeyEdit() {
       newKey !== String(oldKey)
   ) {
     editableKey.value = String(oldKey); // revert
-    console.warn('Duplicate key name not allowed');
+    emit('invalid-key', {
+      reason: 'duplicate',
+      attemptedKey: newKey,
+      originalKey: String(oldKey),
+    });
     return;
   }
 
@@ -362,6 +371,7 @@ onBeforeUnmount(() => {
           @update-value="(val) => updateChildNode(val, key)"
           @rename-key="handleChildKeyRename"
           @remove-self="removeChild"
+          @invalid-key="$emit('invalid-key', $event)"
       >
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />

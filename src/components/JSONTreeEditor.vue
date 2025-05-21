@@ -33,6 +33,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Record<string, any>): void;
+  (e: 'invalid-key', payload: { reason: 'non-numeric-in-array' | 'duplicate'; attemptedKey: string; originalKey: string }): void;
 }>();
 
 const treeData = ref(props.modelValue || {});
@@ -94,6 +95,7 @@ function removeRow(key: string | number) {
           :type-switch-class="typeSwitchClass"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
           @remove-self="removeRow"
+          @invalid-key="$emit('invalid-key', $event)"
       >
         <template #toggle-icon="{ expanded }">
           <slot name="toggle-icon" :expanded="expanded" />
