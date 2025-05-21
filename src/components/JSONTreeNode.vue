@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<{
 
   depth?: number;
   isParentArray?: boolean;
+  siblingKeys?: string[];
 }>(), {
   depth: 0,
   baseIndent: 20,
@@ -94,8 +95,18 @@ function saveKeyEdit() {
   const oldKey = props.nodeKey;
 
   if (props.isParentArray && !/^\d+$/.test(newKey)) {
-    editableKey.value = String(oldKey);
+    editableKey.value = String(oldKey); // revert
     console.warn('Only numeric keys are allowed for arrays.');
+    return;
+  }
+
+  if (
+      props.siblingKeys &&
+      props.siblingKeys.includes(newKey) &&
+      newKey !== String(oldKey)
+  ) {
+    editableKey.value = String(oldKey); // revert
+    console.warn('Duplicate key name not allowed');
     return;
   }
 
@@ -257,8 +268,9 @@ onBeforeUnmount(() => {
           :key="key"
           :nodeKey="key"
           :nodeValue="value"
-          :depth="depth + 1"
           :is-parent-array="Array.isArray(nodeValue)"
+          :sibling-keys="Object.keys(nodeValue)"
+          :depth="depth + 1"
           :base-indent="baseIndent"
           :allow-key-edit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"

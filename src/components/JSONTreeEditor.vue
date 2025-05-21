@@ -75,6 +75,7 @@ function removeRow(key: string | number) {
           :key="key"
           :nodeKey="key"
           :nodeValue="value"
+          :siblingKeys="Object.keys(treeData)"
           :baseIndent="baseIndent"
           :allowKeyEdit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
