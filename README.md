@@ -63,6 +63,7 @@ const JSONTreeData = ref({
     :add-child-class="'text-green-500 hover:text-green-300'"
     :remove-class="'text-red-500 hover:text-red-300'"
     :type-switch-class="'text-cyan-500 hover:text-cyan-300'"
+    @invalid-key="(payload) => showError(payload.reason)"
 >
     <template #toggle-icon="{ expanded }">
       <span>{{ expanded ? '⯆ ' : '⯈ ' }}</span>
