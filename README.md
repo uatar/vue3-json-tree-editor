@@ -62,6 +62,7 @@ const JSONTreeData = ref({
     :add-row-class="'text-green-500 hover:text-green-300'"
     :add-child-class="'text-green-500 hover:text-green-300'"
     :remove-class="'text-red-500 hover:text-red-300'"
+    :type-switch-class="'text-cyan-500 hover:text-cyan-300'"
 >
     <template #toggle-icon="{ expanded }">
       <span>{{ expanded ? '⯆ ' : '⯈ ' }}</span>
@@ -74,6 +75,9 @@ const JSONTreeData = ref({
     </template>
     <template #remove-node="{ remove }">
       <button @click="remove" style="margin-left: 10px;">x</button>
+    </template>
+    <template #type-switch="{ toggle }">
+      <button @click="toggle" style="margin-left: 10px;">⇄</button>
     </template>
 </JSONTreeEditor>
 ```
