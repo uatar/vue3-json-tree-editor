@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<{
   inputClass?: string;
   addChildClass?: string;
   removeClass?: string;
+  typeSwitchClass?: string;
 
   depth?: number;
   isParentArray?: boolean;
@@ -38,6 +39,7 @@ const emit = defineEmits<{
 const expanded = ref(false);
 const editing = ref(false);
 const keyEditMode = ref(false);
+const showTypeSelect = ref(false);
 const hovering = ref(false);
 const editableValue = ref(props.nodeValue);
 const editableKey = ref(String(props.nodeKey));
@@ -177,6 +179,32 @@ function removeChild(key: string | number) {
     emitUpdatedValue(updated);
   }
 }
+// Type Change
+const supportedTypes = ['string', 'number', 'boolean', 'array', 'object'];
+function changeType(newType: string) {
+  showTypeSelect.value = false;
+  let newVal: any;
+
+  switch (newType) {
+    case 'string':
+      newVal = '';
+      break;
+    case 'number':
+      newVal = 0;
+      break;
+    case 'boolean':
+      newVal = false;
+      break;
+    case 'array':
+      newVal = [];
+      break;
+    case 'object':
+      newVal = {};
+      break;
+  }
+
+  emitUpdatedValue(newVal);
+}
 
 function emitUpdatedValue(value: any) {
   emit('update-value', value);
@@ -185,13 +213,23 @@ function emitUpdatedValue(value: any) {
 // Click outside input save and hide input
 const inputRef = ref<HTMLInputElement | null>(null);
 const keyInputRef = ref<HTMLElement | null>(null)
+const typeInputRef = ref<HTMLElement | null>(null);
+const typeToggleBtnRef = ref<HTMLElement | null>(null);
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as Node
   if (editing.value && inputRef.value && !inputRef.value.contains(target)) {
     saveEdit();
   }
   if (keyEditMode.value && keyInputRef.value && !keyInputRef.value.contains(target)) {
-    saveKeyEdit()
+    saveKeyEdit();
+  }
+  if (
+      showTypeSelect.value &&
+      typeInputRef.value &&
+      !typeInputRef.value.contains(target) &&
+      (!typeToggleBtnRef.value || !typeToggleBtnRef.value.contains(target))
+  ) {
+    showTypeSelect.value = false;
   }
 }
 
@@ -235,9 +273,20 @@ onBeforeUnmount(() => {
       />
       <span :class="['v3jte-value', valueClass]" :title="!isObjectOrArray ? 'Double-click to edit value' : 'Double-click to expand'"
             @dblclick="isObjectOrArray ? toggle() : (editing = true)"
-            v-if="!editing">
+            v-if="!editing && !showTypeSelect">
                 {{ displayValue }}
             </span>
+      <select
+          ref="typeInputRef"
+          v-show="showTypeSelect"
+          @change="changeType($event.target.value)"
+          @keyup.esc="showTypeSelect = false"
+          :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
+      >
+        <option v-for="type in supportedTypes" :key="type" :value="type">
+          {{ type }}
+        </option>
+      </select>
       <select
           ref="inputRef"
           v-if="typeof props.nodeValue === 'boolean'"
@@ -260,6 +309,11 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
+      <span v-if="hovering" :class="['v3jte-type-switch', typeSwitchClass]" title="Change Type" ref="typeToggleBtnRef">
+                <slot name="type-switch" :toggle="() => showTypeSelect = !showTypeSelect">
+                    <button @click="showTypeSelect = !showTypeSelect" style="margin-left: 10px;">T</button>
+                </slot>
+            </span>
       <span v-if="allowRemoving && hovering" :class="['v3jte-remove', removeClass]" title="Remove">
                 <slot name="remove-node" :remove="removeSelf">
                     <button @click="removeSelf" style="margin-left: 10px;">x</button>
@@ -290,6 +344,7 @@ onBeforeUnmount(() => {
           :input-class="inputClass"
           :add-child-class="addChildClass"
           :remove-class="removeClass"
+          :type-switch-class="typeSwitchClass"
           @update-value="(val) => updateChildNode(val, key)"
           @rename-key="handleChildKeyRename"
           @remove-self="removeChild"
@@ -302,6 +357,9 @@ onBeforeUnmount(() => {
         </template>
         <template #remove-node="{ remove }">
           <slot name="remove-node" :remove="remove" />
+        </template>
+        <template #type-switch="{ toggle }">
+          <slot name="type-switch" :toggle="toggle"/>
         </template>
       </JSONTreeNode>
     </ul>

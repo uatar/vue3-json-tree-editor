@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<{
   addRowClass?: string;
   addChildClass?: string;
   removeClass?: string;
+  typeSwitchClass?: string;
 }>(), {
   baseIndent: 20,
   allowKeyEdit: false,
@@ -90,6 +91,7 @@ function removeRow(key: string | number) {
           :input-class="inputClass"
           :add-child-class="addChildClass"
           :remove-class="removeClass"
+          :type-switch-class="typeSwitchClass"
           @update-value="(val) => updateNode({ ...treeData, [key]: val })"
           @remove-self="removeRow"
       >
@@ -101,6 +103,9 @@ function removeRow(key: string | number) {
         </template>
         <template #remove-node="{ remove }">
           <slot name="remove-node" :remove="remove" />
+        </template>
+        <template #type-switch="{ toggle }">
+          <slot name="type-switch" :toggle="toggle"/>
         </template>
       </JSONTreeNode>
 
