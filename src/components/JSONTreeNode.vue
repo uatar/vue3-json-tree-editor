@@ -47,7 +47,12 @@ const displayValue = computed(() => {
   if (isObjectOrArray) {
     return expanded.value ? '' : (Array.isArray(props.nodeValue) ? '[Array]' : '{Object}');
   }
-  return typeof props.nodeValue === 'string' && props.nodeValue.trim() === '' ? '<empty>' : props.nodeValue;
+  if (typeof props.nodeValue === 'string') {
+    const trimmed = props.nodeValue.trim();
+    return trimmed === '' ? '<empty>' : `'${props.nodeValue}'`;
+  }
+
+  return props.nodeValue;
 });
 
 watch(() => props.nodeKey, (newKey) => {
@@ -205,6 +210,7 @@ onBeforeUnmount(() => {
             </span>
       <input
           ref="inputRef"
+          :type="typeof props.nodeValue === 'number' ? 'number' : 'text'"
           v-if="!isObjectOrArray"
           v-show="editing"
           v-model="editableValue"
