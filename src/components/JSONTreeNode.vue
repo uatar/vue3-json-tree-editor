@@ -38,6 +38,7 @@ const emit = defineEmits<{
 const expanded = ref(false);
 const editing = ref(false);
 const keyEditMode = ref(false);
+const hovering = ref(false);
 const editableValue = ref(props.nodeValue);
 const editableKey = ref(String(props.nodeKey));
 
@@ -204,7 +205,10 @@ onBeforeUnmount(() => {
 
 <template>
   <li>
-    <div :class="['v3jte-node', nodeClass]" :style="{ paddingLeft: depth * baseIndent + 'px' }">
+    <div :class="['v3jte-node', nodeClass]"
+         :style="{ paddingLeft: depth * baseIndent + 'px' }"
+         @mouseenter="hovering = true"
+         @mouseleave="hovering = false">
             <span
                 :class="['v3jte-toggle', toggleClass]"
                 v-if="isObjectOrArray"
@@ -256,7 +260,7 @@ onBeforeUnmount(() => {
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
-      <span v-if="allowRemoving" :class="['v3jte-remove', removeClass]" title="Remove">
+      <span v-if="allowRemoving && hovering" :class="['v3jte-remove', removeClass]" title="Remove">
                 <slot name="remove-node" :remove="removeSelf">
                     <button @click="removeSelf" style="margin-left: 10px;">x</button>
                 </slot>
