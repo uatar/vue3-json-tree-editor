@@ -235,6 +235,7 @@ onBeforeUnmount(() => {
                 {{ displayValue }}
             </span>
       <select
+          ref="inputRef"
           v-if="typeof props.nodeValue === 'boolean'"
           v-show="editing"
           v-model="editableValue"
