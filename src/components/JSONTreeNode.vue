@@ -6,6 +6,7 @@ const props = withDefaults(defineProps<{
   nodeKey: string | number;
   nodeValue: any;
   baseIndent?: number;
+  readOnly?: boolean;
   allowKeyEdit?: boolean;
   allowChildAdding?: boolean;
   allowRemoving?: boolean;
@@ -27,6 +28,11 @@ const props = withDefaults(defineProps<{
 }>(), {
   depth: 0,
   baseIndent: 20,
+  readOnly: false,
+  allowKeyEdit: false,
+  allowRowAdding: false,
+  allowChildAdding: false,
+  allowRemoving: false,
   isParentArray: false,
 });
 
@@ -281,26 +287,30 @@ onBeforeUnmount(() => {
             </span>
       <span v-if="!keyEditMode && !props.isParentArray"
             :class="['v3jte-key', keyClass]"
-            :title="allowKeyEdit ? 'Double-click to edit key' : ''"
-            @dblclick="allowKeyEdit && (keyEditMode = true)">
+            :title="!readOnly && allowKeyEdit ? 'Double-click to edit key' : ''"
+            @dblclick="!readOnly && allowKeyEdit && (keyEditMode = true)">
               {{ displayKey }}:
             </span>
       <input
           ref="keyInputRef"
-          v-if="allowKeyEdit && !props.isParentArray"
+          v-if="!readOnly && allowKeyEdit && !props.isParentArray"
           v-show="keyEditMode"
           v-model="editableKey"
           @keyup.enter="saveKeyEdit"
           @keyup.esc="cancelKeyEdit"
           :class="['v3jte-input v3jte-key-input', inputClass, keyInputClass]"
       />
-      <span :class="['v3jte-value', valueClass]" :title="!isObjectOrArray ? 'Double-click to edit value' : 'Double-click to expand'"
-            @dblclick="isObjectOrArray ? toggle() : (editing = true)"
-            v-if="!editing && !showTypeSelect">
+      <span
+          :class="['v3jte-value', valueClass]"
+          :title="!isObjectOrArray ? (!readOnly ? 'Double-click to edit value' : '') : 'Double-click to expand'"
+          @dblclick="isObjectOrArray ? toggle() : (editing = !readOnly)"
+          v-if="!editing && !showTypeSelect"
+      >
                 {{ displayValue }}
             </span>
       <select
           ref="typeInputRef"
+          v-if="!readOnly"
           v-show="showTypeSelect"
           @change="changeType($event.target.value)"
           @keyup.esc="showTypeSelect = false"
@@ -312,7 +322,7 @@ onBeforeUnmount(() => {
       </select>
       <select
           ref="inputRef"
-          v-if="typeof props.nodeValue === 'boolean'"
+          v-if="!readOnly && typeof props.nodeValue === 'boolean'"
           v-show="editing"
           v-model="editableValue"
           @change="saveEdit"
@@ -325,19 +335,19 @@ onBeforeUnmount(() => {
       <input
           ref="inputRef"
           :type="typeof props.nodeValue === 'number' ? 'number' : 'text'"
-          v-else-if="!isObjectOrArray"
+          v-else-if="!readOnly && !isObjectOrArray"
           v-show="editing"
           v-model="editableValue"
           @keyup.enter="saveEdit"
           @keyup.esc="cancelEdit"
           :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
       />
-      <span v-if="hovering" :class="['v3jte-type-switch', typeSwitchClass]" title="Change Type" ref="typeToggleBtnRef">
+      <span v-if="!readOnly && hovering" :class="['v3jte-type-switch', typeSwitchClass]" title="Change Type" ref="typeToggleBtnRef">
                 <slot name="type-switch" :toggle="() => showTypeSelect = !showTypeSelect">
                     <button @click="showTypeSelect = !showTypeSelect" style="margin-left: 10px;">T</button>
                 </slot>
             </span>
-      <span v-if="allowRemoving && hovering" :class="['v3jte-remove', removeClass]" title="Remove">
+      <span v-if="!readOnly && allowRemoving && hovering" :class="['v3jte-remove', removeClass]" title="Remove">
                 <slot name="remove-node" :remove="removeSelf">
                     <button @click="removeSelf" style="margin-left: 10px;">x</button>
                 </slot>
@@ -354,6 +364,7 @@ onBeforeUnmount(() => {
           :sibling-keys="Object.keys(nodeValue)"
           :depth="depth + 1"
           :base-indent="baseIndent"
+          :read-only="readOnly"
           :allow-key-edit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
           :allow-removing="allowRemoving"
@@ -388,7 +399,7 @@ onBeforeUnmount(() => {
       </JSONTreeNode>
     </ul>
 
-    <span v-if="allowChildAdding && isObjectOrArray" v-show="expanded" :style="{ paddingLeft: (depth + 1) * baseIndent + 'px' }"
+    <span v-if="!readOnly && allowChildAdding && isObjectOrArray" v-show="expanded" :style="{ paddingLeft: (depth + 1) * baseIndent + 'px' }"
           :class="['v3jte-add-child', addChildClass]" title="Add a new record">
             <slot name="add-child" :addChild="addChild">
                 <button @click="addChild">Add</button>

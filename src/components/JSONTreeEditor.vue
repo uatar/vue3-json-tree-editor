@@ -5,6 +5,7 @@ import JSONTreeNode from "./JSONTreeNode.vue";
 const props = withDefaults(defineProps<{
   modelValue: Record<string, any> | null;
   baseIndent?: number;
+  readOnly?: boolean;
   allowKeyEdit?: boolean;
   allowRowAdding?: boolean;
   allowChildAdding?: boolean;
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<{
   typeSwitchClass?: string;
 }>(), {
   baseIndent: 20,
+  readOnly: false,
   allowKeyEdit: false,
   allowRowAdding: false,
   allowChildAdding: false,
@@ -79,6 +81,7 @@ function removeRow(key: string | number) {
           :nodeValue="value"
           :siblingKeys="Object.keys(treeData)"
           :baseIndent="baseIndent"
+          :read-only="readOnly"
           :allowKeyEdit="allowKeyEdit"
           :allow-child-adding="allowChildAdding"
           :allow-removing="allowRemoving"
@@ -111,7 +114,7 @@ function removeRow(key: string | number) {
         </template>
       </JSONTreeNode>
 
-      <div v-if="allowRowAdding" :class="['v3jte-add-row', addRowClass]" title="Add a new record">
+      <div v-if="!readOnly && allowRowAdding" :class="['v3jte-add-row', addRowClass]" title="Add a new record">
         <slot name="add-row" :addRow="addRow">
           <button @click="addRow">+ Add new</button>
         </slot>
