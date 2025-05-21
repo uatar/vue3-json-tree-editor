@@ -223,10 +223,21 @@ onBeforeUnmount(() => {
             v-if="!editing">
                 {{ displayValue }}
             </span>
+      <select
+          v-if="typeof props.nodeValue === 'boolean'"
+          v-show="editing"
+          v-model="editableValue"
+          @change="saveEdit"
+          @keyup.esc="cancelEdit"
+          :class="['v3jte-input v3jte-value-input', inputClass, valueInputClass]"
+      >
+        <option :value="true">true</option>
+        <option :value="false">false</option>
+      </select>
       <input
           ref="inputRef"
           :type="typeof props.nodeValue === 'number' ? 'number' : 'text'"
-          v-if="!isObjectOrArray"
+          v-else-if="!isObjectOrArray"
           v-show="editing"
           v-model="editableValue"
           @keyup.enter="saveEdit"
